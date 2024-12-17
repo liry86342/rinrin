@@ -19,16 +19,18 @@ class ProxyExtension {
     };
   }
 
-  fetchFromProxy(args) {
+  async fetchFromProxy(args) {
     const proxyUrl = "https://cors-anywhere.herokuapp.com/";
     const finalUrl = proxyUrl + args.URL;
     
-    return new Promise((resolve, reject) => {
-      fetch(finalUrl)
-        .then(response => response.ok ? response.text() : Promise.reject('Failed to fetch'))
-        .then(resolve)
-        .catch(reject);
-    });
+    try {
+      let response = await fetch(finalUrl);
+      if (!response.ok) throw new Error('Failed to fetch');
+      let data = await response.text();
+      return data;
+    } catch (error) {
+      return `Error: ${error.message}`;
+    }
   }
 }
 
